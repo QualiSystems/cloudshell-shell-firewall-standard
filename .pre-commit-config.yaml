@@ -9,7 +9,6 @@ repos:
     hooks:
       - id: black
         language_version: python3.7
-        exclude: '/mibs'
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.8
     hooks:
@@ -22,4 +21,3 @@ repos:
           flake8-eradicate,
         ]
         language_version: python3.7
-        exclude: '/mibs'

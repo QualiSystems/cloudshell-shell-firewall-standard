@@ -12,7 +12,7 @@ with open("test_requirements.txt") as f_tests:
     required_for_tests = f_tests.read().splitlines()
 
 setup(
-    name="cloudshell-template",
+    name="cloudshell-shell-firewall-standard",
     url="http://www.qualisystems.com/",
     author="QualiSystems",
     author_email="info@qualisystems.com",
@@ -24,6 +24,6 @@ setup(
     ),
     version=version_from_file,
     package_data={"": ["*.txt"]},
-    description="<your package description>",
+    description="QualiSystems Shells Firewall Standard Package",
     include_package_data=True,
 )
