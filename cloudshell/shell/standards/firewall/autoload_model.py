@@ -1,7 +1,7 @@
 from cloudshell.shell.standards.autoload_generic_models import (
     GenericChassis,
     GenericModule,
-    GenericNetworkPort,
+    GenericPort,
     GenericPortChannel,
     GenericPowerPort,
     GenericResourceModel,
@@ -16,7 +16,7 @@ __all__ = [
     "GenericSubModule",
     "GenericPortChannel",
     "GenericPowerPort",
-    "GenericNetworkPort",
+    "GenericPort",
 ]
 
 
@@ -36,5 +36,5 @@ class FirewallResourceModel(GenericResourceModel):
         return _FirewallEntities
 
 
-class FirewallPort(GenericNetworkPort):
+class FirewallPort(GenericPort):
     pass
