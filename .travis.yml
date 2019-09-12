@@ -32,7 +32,7 @@ script: tox
 
 deploy:
   - provider: pypi
-    server: https://test.pypi.org/legacy/
+    server: https://upload.test.pypi.org/legacy/
     distributions: "sdist bdist_wheel"
     user: quali
     password:
