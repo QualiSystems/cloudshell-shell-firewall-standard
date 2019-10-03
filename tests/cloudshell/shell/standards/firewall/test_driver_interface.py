@@ -14,7 +14,7 @@ else:
 
 class TestDriverInterface(unittest.TestCase):
     def test_interface_is_abstract(self):
-        with self.assertRaisesRegex(TypeError, "abstract"):
+        with self.assertRaisesRegexp(TypeError, "abstract"):
             FirewallResourceDriverInterface()
 
     def test_interface_have_all_methods(self):
