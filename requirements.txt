@@ -1,1 +1,2 @@
 cloudshell-shell-standards~=2.0
+attrs>=21
