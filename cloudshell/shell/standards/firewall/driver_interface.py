@@ -1,7 +1,4 @@
-from abc import ABCMeta, abstractmethod
-
-# compatible with Python 2 *and* 3:
-ABC = ABCMeta("ABC", (object,), {"__slots__": ()})
+from abc import ABC, abstractmethod
 
 
 class FirewallResourceDriverInterface(ABC):
