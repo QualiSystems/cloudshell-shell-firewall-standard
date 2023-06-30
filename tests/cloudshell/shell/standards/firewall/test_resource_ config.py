@@ -1,5 +1,4 @@
-import sys
-import unittest
+import pytest
 
 from cloudshell.shell.standards.attribute_names import (
     BACKUP_LOCATION,
@@ -13,6 +12,7 @@ from cloudshell.shell.standards.attribute_names import (
     CONSOLE_SERVER_IP_ADDRESS,
     CONSOLE_USER,
     DISABLE_SNMP,
+    ENABLE_PASSWORD,
     ENABLE_SNMP,
     PASSWORD,
     SESSION_CONCURRENCY_LIMIT,
@@ -24,82 +24,88 @@ from cloudshell.shell.standards.attribute_names import (
     SNMP_V3_USER,
     SNMP_VERSION,
     SNMP_WRITE_COMMUNITY,
+    USER,
     VRF_MANAGEMENT_NAME,
+)
+from cloudshell.shell.standards.resource_config_generic_models import (
+    BackupType,
+    CliConnectionType,
+    SnmpV3AuthProtocol,
+    SnmpV3PrivProtocol,
+    SnmpVersion,
 )
 
 from cloudshell.shell.standards.firewall.resource_config import FirewallResourceConfig
 
-if sys.version_info >= (3, 0):
-    from unittest.mock import MagicMock
-else:
-    from mock import MagicMock
+
+@pytest.fixture
+def attributes():
+    return {
+        USER: "user",
+        SNMP_READ_COMMUNITY: "community",
+        SNMP_WRITE_COMMUNITY: "write community",
+        SNMP_V3_USER: "snmp user",
+        SNMP_V3_PASSWORD: "snmp password",
+        SNMP_V3_PRIVATE_KEY: "snmp private key",
+        SNMP_V3_AUTH_PROTOCOL: "sha",
+        SNMP_V3_PRIVACY_PROTOCOL: "DES",
+        SNMP_VERSION: "v2c",
+        ENABLE_SNMP: "True",
+        DISABLE_SNMP: "False",
+        VRF_MANAGEMENT_NAME: "vrf",
+        PASSWORD: "password",
+        BACKUP_LOCATION: "backup location",
+        BACKUP_PASSWORD: "backup password",
+        BACKUP_TYPE: "ftp",
+        BACKUP_USER: "backup user",
+        CLI_CONNECTION_TYPE: "ssh",
+        CLI_TCP_PORT: "22",
+        SESSION_CONCURRENCY_LIMIT: "1",
+        CONSOLE_PASSWORD: "console password",
+        CONSOLE_PORT: "3322",
+        CONSOLE_SERVER_IP_ADDRESS: "192.168.1.1",
+        CONSOLE_USER: "console user",
+        ENABLE_PASSWORD: "enable password",
+    }
 
 
-class TestFirewallResourceConfig(unittest.TestCase):
-    def test_snmp_config(self):
-        shell_name = "Shell name"
-        api = MagicMock(DecryptPassword=lambda password: MagicMock(Value=password))
+def test_firewall_resource_config(api, attributes, context_creator):
+    shell_name = "Shell name"
+    resource_name = "Resource name"
+    context = context_creator(resource_name, shell_name, "CS_Switch", "NA", attributes)
 
-        attributes = {
-            SNMP_READ_COMMUNITY: "community",
-            SNMP_WRITE_COMMUNITY: "write community",
-            SNMP_V3_USER: "snmp user",
-            SNMP_V3_PASSWORD: "snmp password",
-            SNMP_V3_PRIVATE_KEY: "snmp private key",
-            SNMP_V3_AUTH_PROTOCOL: "snmp auth protocol",
-            SNMP_V3_PRIVACY_PROTOCOL: "snmp priv protocol",
-            SNMP_VERSION: "v2c",
-            ENABLE_SNMP: "True",
-            DISABLE_SNMP: "False",
-            VRF_MANAGEMENT_NAME: "vrf",
-            PASSWORD: "password",
-            BACKUP_LOCATION: "backup location",
-            BACKUP_PASSWORD: "backup password",
-            BACKUP_TYPE: "backup type",
-            BACKUP_USER: "backup user",
-            CLI_CONNECTION_TYPE: "ssh",
-            CLI_TCP_PORT: "22",
-            SESSION_CONCURRENCY_LIMIT: "1",
-            CONSOLE_PASSWORD: "console password",
-            CONSOLE_PORT: "3322",
-            CONSOLE_SERVER_IP_ADDRESS: "192.168.1.1",
-            CONSOLE_USER: "console user",
-        }
-        shell_attributes = {
-            "{}.{}".format(shell_name, key): value for key, value in attributes.items()
-        }
+    config = FirewallResourceConfig.from_context(context, api)
 
-        config = FirewallResourceConfig(
-            shell_name, attributes=shell_attributes, api=api
-        )
-        self.assertEqual(attributes[SNMP_READ_COMMUNITY], config.snmp_read_community)
-        self.assertEqual(attributes[SNMP_WRITE_COMMUNITY], config.snmp_write_community)
-        self.assertEqual(attributes[SNMP_V3_USER], config.snmp_v3_user)
-        self.assertEqual(attributes[SNMP_V3_PASSWORD], config.snmp_v3_password)
-        self.assertEqual(attributes[SNMP_V3_PRIVATE_KEY], config.snmp_v3_private_key)
-        self.assertEqual(
-            attributes[SNMP_V3_AUTH_PROTOCOL], config.snmp_v3_auth_protocol
-        )
-        self.assertEqual(
-            attributes[SNMP_V3_PRIVACY_PROTOCOL], config.snmp_v3_priv_protocol
-        )
-        self.assertEqual(attributes[SNMP_VERSION], config.snmp_version)
-        self.assertEqual(attributes[ENABLE_SNMP], config.enable_snmp)
-        self.assertEqual(attributes[DISABLE_SNMP], config.disable_snmp)
-        self.assertEqual(attributes[VRF_MANAGEMENT_NAME], config.vrf_management_name)
-        self.assertEqual(attributes[PASSWORD], config.password)
-        self.assertEqual(attributes[BACKUP_LOCATION], config.backup_location)
-        self.assertEqual(attributes[BACKUP_PASSWORD], config.backup_password)
-        self.assertEqual(attributes[BACKUP_TYPE], config.backup_type)
-        self.assertEqual(attributes[BACKUP_USER], config.backup_user)
-        self.assertEqual(attributes[CLI_CONNECTION_TYPE], config.cli_connection_type)
-        self.assertEqual(attributes[CLI_TCP_PORT], config.cli_tcp_port)
-        self.assertEqual(
-            attributes[SESSION_CONCURRENCY_LIMIT], config.sessions_concurrency_limit
-        )
-        self.assertEqual(attributes[CONSOLE_PASSWORD], config.console_password)
-        self.assertEqual(attributes[CONSOLE_PORT], config.console_port)
-        self.assertEqual(
-            attributes[CONSOLE_SERVER_IP_ADDRESS], config.console_server_ip_address
-        )
-        self.assertEqual(attributes[CONSOLE_USER], config.console_user)
+    assert config.user == attributes[USER]
+    assert config.enable_password == attributes[ENABLE_PASSWORD]
+    assert config.snmp_read_community == attributes[SNMP_READ_COMMUNITY]
+    assert config.snmp_write_community == attributes[SNMP_WRITE_COMMUNITY]
+    assert config.snmp_v3_user == attributes[SNMP_V3_USER]
+    assert config.snmp_v3_password == attributes[SNMP_V3_PASSWORD]
+    assert config.snmp_v3_private_key == attributes[SNMP_V3_PRIVATE_KEY]
+    assert config.snmp_v3_auth_protocol is SnmpV3AuthProtocol(
+        attributes[SNMP_V3_AUTH_PROTOCOL]
+    )
+    assert config.snmp_v3_priv_protocol is SnmpV3PrivProtocol(
+        attributes[SNMP_V3_PRIVACY_PROTOCOL]
+    )
+    assert config.snmp_version is SnmpVersion(attributes[SNMP_VERSION])
+    assert config.enable_snmp is True
+    assert config.disable_snmp is False
+    assert config.vrf_management_name == attributes[VRF_MANAGEMENT_NAME]
+    assert config.password == attributes[PASSWORD]
+    assert config.backup_location == attributes[BACKUP_LOCATION]
+    assert config.backup_password == attributes[BACKUP_PASSWORD]
+    assert config.backup_type is BackupType(attributes[BACKUP_TYPE])
+    assert config.backup_user == attributes[BACKUP_USER]
+    assert config.cli_connection_type is CliConnectionType(
+        attributes[CLI_CONNECTION_TYPE]
+    )
+    assert config.cli_tcp_port == int(attributes[CLI_TCP_PORT])
+    assert config.sessions_concurrency_limit == int(
+        attributes[SESSION_CONCURRENCY_LIMIT]
+    )
+    assert config.console_password == attributes[CONSOLE_PASSWORD]
+    assert config.console_port == int(attributes[CONSOLE_PORT])
+    assert config.console_server_ip_address == attributes[CONSOLE_SERVER_IP_ADDRESS]
+    assert config.console_user == attributes[CONSOLE_USER]

@@ -2,5 +2,4 @@ pre-commit
 tox
 tox-factor
 -r test_requirements.txt
-
--e git://github.com/QualiSystems/cloudshell-shell-standards.git#egg=cloudshell-shell-standards
+-r requirements.txt

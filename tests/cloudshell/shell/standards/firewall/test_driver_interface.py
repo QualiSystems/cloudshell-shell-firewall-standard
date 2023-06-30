@@ -1,20 +1,15 @@
-import sys
 import unittest
 from functools import partial
+from unittest.mock import MagicMock
 
 from cloudshell.shell.standards.firewall.driver_interface import (
     FirewallResourceDriverInterface,
 )
 
-if sys.version_info >= (3, 0):
-    from unittest.mock import MagicMock
-else:
-    from mock import MagicMock
-
 
 class TestDriverInterface(unittest.TestCase):
     def test_interface_is_abstract(self):
-        with self.assertRaisesRegexp(TypeError, "abstract"):
+        with self.assertRaisesRegex(TypeError, "abstract"):
             FirewallResourceDriverInterface()
 
     def test_interface_have_all_methods(self):
@@ -33,19 +28,15 @@ class TestDriverInterface(unittest.TestCase):
     def test_abstract_methods_return_none(self):
         class TestedClass(FirewallResourceDriverInterface):
             def run_custom_command(self, context, custom_command):
-                return super(TestedClass, self).run_custom_command(
-                    context, custom_command
-                )
+                return super().run_custom_command(context, custom_command)
 
             def run_custom_config_command(self, context, custom_command):
-                return super(TestedClass, self).run_custom_config_command(
-                    context, custom_command
-                )
+                return super().run_custom_config_command(context, custom_command)
 
             def save(
                 self, context, folder_path, configuration_type, vrf_management_name
             ):
-                return super(TestedClass, self).save(
+                return super().save(
                     context, folder_path, configuration_type, vrf_management_name
                 )
 
@@ -57,7 +48,7 @@ class TestDriverInterface(unittest.TestCase):
                 restore_method,
                 vrf_management_name,
             ):
-                return super(TestedClass, self).restore(
+                return super().restore(
                     context,
                     path,
                     configuration_type,
@@ -66,30 +57,26 @@ class TestDriverInterface(unittest.TestCase):
                 )
 
             def get_inventory(self, context):
-                return super(TestedClass, self).get_inventory(context)
+                return super().get_inventory(context)
 
             def orchestration_restore(
                 self, context, saved_artifact_info, custom_params
             ):
-                return super(TestedClass, self).orchestration_restore(
+                return super().orchestration_restore(
                     context, saved_artifact_info, custom_params
                 )
 
             def orchestration_save(self, context, mode, custom_params):
-                return super(TestedClass, self).orchestration_save(
-                    context, mode, custom_params
-                )
+                return super().orchestration_save(context, mode, custom_params)
 
             def health_check(self, context):
-                return super(TestedClass, self).health_check(context)
+                return super().health_check(context)
 
             def load_firmware(self, context, path, vrf_management_name):
-                return super(TestedClass, self).load_firmware(
-                    context, path, vrf_management_name
-                )
+                return super().load_firmware(context, path, vrf_management_name)
 
             def shutdown(self, context):
-                return super(TestedClass, self).shutdown(context)
+                return super().shutdown(context)
 
         inst = TestedClass()
         arg = MagicMock()

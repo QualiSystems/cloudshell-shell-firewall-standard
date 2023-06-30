@@ -1,5 +1,3 @@
-import unittest
-
 from cloudshell.shell.standards.autoload_generic_models import (
     GenericChassis,
     GenericModule,
@@ -14,30 +12,26 @@ from cloudshell.shell.standards.firewall.autoload_model import (
 )
 
 
-class TestGenericResourceModel(unittest.TestCase):
-    def test_resource_model(self):
-        resource_name = "resource name"
-        shell_name = "shell name"
-        family_name = "CS_Firewall"
+def test_resource_model(api):
+    resource_name = "resource name"
+    shell_name = "shell name"
+    family_name = "CS_Firewall"
 
-        resource = FirewallResourceModel(resource_name, shell_name, family_name)
+    resource = FirewallResourceModel(resource_name, shell_name, family_name, api)
 
-        self.assertEqual(family_name, resource.family_name)
-        self.assertEqual(shell_name, resource.shell_name)
-        self.assertEqual(resource_name, resource.name)
-        self.assertEqual("", resource.relative_address.__repr__())
-        self.assertEqual("GenericResource", resource.resource_model)
-        self.assertEqual(
-            "{}.{}".format(shell_name, resource.resource_model),
-            resource.cloudshell_model_name,
-        )
+    assert resource.family_name == family_name
+    assert resource.shell_name == shell_name
+    assert resource.name == resource_name
+    assert repr(resource.relative_address) == ""
+    assert resource.resource_model == "GenericResource"
+    assert resource.cloudshell_model_name == f"{shell_name}.{resource.resource_model}"
 
-        self.assertEqual(GenericChassis, resource.entities.Chassis)
-        self.assertEqual(GenericModule, resource.entities.Module)
-        self.assertEqual(GenericSubModule, resource.entities.SubModule)
-        self.assertEqual(FirewallPort, resource.entities.Port)
-        self.assertEqual(GenericPortChannel, resource.entities.PortChannel)
-        self.assertEqual(GenericPowerPort, resource.entities.PowerPort)
+    assert resource.entities.Chassis == GenericChassis
+    assert resource.entities.Module == GenericModule
+    assert resource.entities.SubModule == GenericSubModule
+    assert resource.entities.Port == FirewallPort
+    assert resource.entities.PortChannel == GenericPortChannel
+    assert resource.entities.PowerPort == GenericPowerPort
 
-        self.assertIsInstance(resource.unique_identifier, str)
-        self.assertTrue(resource.unique_identifier)
+    assert isinstance(resource.unique_identifier, str)
+    assert resource.unique_identifier
