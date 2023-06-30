@@ -1,5 +1,7 @@
-import cloudshell.shell.standards.attribute_names as attribute_names
-from cloudshell.shell.standards.core.resource_config_entities import ResourceAttrRO
+from __future__ import annotations
+
+from attrs import define
+
 from cloudshell.shell.standards.resource_config_generic_models import (
     GenericBackupConfig,
     GenericCLIConfig,
@@ -8,9 +10,8 @@ from cloudshell.shell.standards.resource_config_generic_models import (
 )
 
 
+@define(slots=False, str=False)
 class FirewallResourceConfig(
     GenericSnmpConfig, GenericCLIConfig, GenericConsoleServerConfig, GenericBackupConfig
 ):
-    vrf_management_name = ResourceAttrRO(
-        attribute_names.VRF_MANAGEMENT_NAME, ResourceAttrRO.NAMESPACE.SHELL_NAME
-    )
+    ...
